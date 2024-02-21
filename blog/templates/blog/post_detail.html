@@ -58,7 +58,11 @@
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a> {% endcomment %}
                     </header>
                     <!-- Preview image figure-->
-                    <img class="img-fluid rounded" src="{{ post.headImage.url }}" alt="">
+                    {% if post.headImage %}
+                        <img class="img-fluid rounded" src="{{ post.headImage.url }}" alt="{{ post.title }} headImage">
+                    {% else %}
+                        <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
+                    {% endif %}
                     <hr>
                     <!-- Post content-->
                     <p>{{ post.content }}</p>
