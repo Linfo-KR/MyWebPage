@@ -6,6 +6,7 @@ class Post(models.Model) :
     createTime = models.DateTimeField(auto_now_add = True)
     updateTime = models.DateTimeField(auto_now = True)
     headImage = models.ImageField(upload_to='blog/images/%Y/%m/%d', blank=True)
+    fileUpload = models.FileField(upload_to='blog/files/%Y/%m/%d', blank=True)
     # author = None / Preparing...
     
     def __str__(self):
