@@ -1,11 +1,14 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
+from django.contrib.auth.models import User
 from .models import Post
 
 
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user01 = User.objects.create_user(username='linfo-kr', password='linfo-kr')
+        self.user02 = User.objects.create_user(username='linfo-us', password='linfo-us')
         
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -45,10 +48,12 @@ class TestView(TestCase):
         post001 = Post.objects.create(
             title = 'First Post',
             content = 'This is First Post',
+            author = self.user01
         )
         post002 = Post.objects.create(
             title = 'Second Post',
             content = 'This is Second Post',
+            author = self.user02
         )
         self.assertEqual(Post.objects.count(), 2)
         # 3.2 When you reload the Post List page
@@ -61,12 +66,16 @@ class TestView(TestCase):
         self.assertIn(post002.title, mainArea.text)
         # 3.4 The phrase 'Any Posts not Exist' is no longer visible
         self.assertNotIn('Any Posts not Exist', mainArea.text)
+        # 3.5 Username Check
+        self.assertIn(self.user01.username.upper(), mainArea.text)
+        self.assertIn(self.user02.username.upper(), mainArea.text)
         
     def test_post_detail(self):
         # 1.1 One Post is Exist
         post001 = Post.objects.create(
             title = 'First Post',
-            content = 'This is First Post'
+            content = 'This is First Post',
+            author = self.user01,
         )
         # 1.2 The Post's URL is '/blog/1/'
         self.assertEqual(post001.get_absolute_url(), '/blog/1/')
@@ -85,6 +94,6 @@ class TestView(TestCase):
         postArea = soup.find('div', id="post-area")
         self.assertIn(post001.title, postArea.text)
         # 2.5 The author of the first post exists in the post area(None Development)
-        # None
+        self.assertIn(self.user01.username.upper(), postArea.text)
         # 2.6 The content of the first post exists in the post area
         self.assertIn(post001.content, postArea.text)
