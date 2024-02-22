@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css'%}" media="screen">
     <!-- Custom Style for this template -->
     <link rel="stylesheet" href="{% static 'blog/css/blog-post.css'%}" media="screen">
+    <script src="https://kit.fontawesome.com/a31850d8b2.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Responsive navbar-->
@@ -66,6 +67,22 @@
                     <hr>
                     <!-- Post content-->
                     <p>{{ post.content }}</p>
+                    <hr>
+                    {% if post.fileUpload %}
+                        <a href="{{ post.fileUpload.url }}" class="btn btn-outline-dark" role = "button" download>
+                            Download:
+                            {% if post.get_file_ext == 'csv' %}
+                                <i class="fa-solid fa-file-csv"></i>
+                            {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
+                                <i class="fa-solid fa-file-excel"></i>
+                            {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+                                <i class="fa-solid fa-file-word"></i>
+                            {% else %}
+                                <i class="fa-solid fa-file"></i>
+                            {% endif %}
+                            {{ post.get_file_name }}
+                        </a>
+                    {% endif %}
                     <hr>
                 </article>
                 <!-- Comments section-->
