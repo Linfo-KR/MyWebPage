@@ -47,3 +47,32 @@ class TestView(TestCase):
         self.assertIn(post002.title, mainArea.text)
         # 3.4 The phrase 'Any Posts not Exist' is no longer visible
         self.assertNotIn('Any Posts not Exist', mainArea.text)
+        
+    def test_post_detail(self):
+        # 1.1 One Post is Exist
+        post001 = Post.objects.create(
+            title = 'First Post',
+            content = 'This is First Post'
+        )
+        # 1.2 The Post's URL is '/blog/1/'
+        self.assertEqual(post001.get_absolute_url(), '/blog/1/')
+        
+        # 2.0 Detail Page Test of First Post
+        # 2.1 Approaching url on the first post works fine(status code: 200)
+        response = self.client.get(post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        # 2.2 The same navigation bar as the post list page exists
+        navbar = soup.nav
+        self.assertIn('Blog', navbar.text)
+        self.assertIn('About Me', navbar.text)
+        # 2.3 The title of the first post is in the Web browser tab title
+        self.assertIn(post001.title, soup.title.text)
+        # 2.4 The title of the first post exists in the post area
+        mainArea = soup.find('div', id="main-area")
+        postArea = soup.find('div', id="post-area")
+        self.assertIn(post001.title, postArea.text)
+        # 2.5 The author of the first post exists in the post area(None Development)
+        # None
+        # 2.6 The content of the first post exists in the post area
+        self.assertIn(post001.content, postArea.text)
