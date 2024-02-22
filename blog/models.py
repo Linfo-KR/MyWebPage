@@ -3,7 +3,8 @@ import os
 from django.db import models
 
 class Post(models.Model) :
-    title = models.CharField(max_length = 30)
+    title = models.CharField(max_length=30)
+    hookText = models.CharField(max_length=100, blank=True)
     content = models.TextField()
     createTime = models.DateTimeField(auto_now_add = True)
     updateTime = models.DateTimeField(auto_now = True)
