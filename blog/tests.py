@@ -7,6 +7,23 @@ class TestView(TestCase):
     def setUp(self):
         self.client = Client()
         
+    def navbar_test(self, soup):
+        navbar = soup.nav
+        self.assertIn('Blog', navbar.text)
+        self.assertIn('About Me', navbar.text)
+        
+        logoBtn = navbar.find('a', text = 'Linfo-KR')
+        self.assertEqual(logoBtn.attrs['href'], '/')
+        
+        homeBtn = navbar.find('a', text = 'Home')
+        self.assertEqual(homeBtn.attrs['href'], '/')
+        
+        blogBtn = navbar.find('a', text = 'Blog')
+        self.assertEqual(blogBtn.attrs['href'], '/blog/')
+        
+        aboutMeBtn = navbar.find('a', text = 'About Me')
+        self.assertEqual(aboutMeBtn.attrs['href'], '/about_me/')
+        
     def test_post_list(self):
         # 1.1 Get PostList Page
         response = self.client.get('/blog/')
@@ -15,11 +32,8 @@ class TestView(TestCase):
         # 1.3 Page Title is 'Blog'
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertEqual(soup.title.text, 'Blog')
-        # 1.4 Navigation Bar is Exist
-        navbar = soup.nav
-        # 1.5 'Blog', 'About Me' in Navigation Bar
-        self.assertIn('Blog', navbar.text)
-        self.assertIn('About Me', navbar.text)
+        # 1.4 Navigation Bar Test
+        self.navbar_test(soup)
         
         # 2.1 If there are no Posts in MainArea?
         self.assertEqual(Post.objects.count(), 0)
@@ -62,10 +76,8 @@ class TestView(TestCase):
         response = self.client.get(post001.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
-        # 2.2 The same navigation bar as the post list page exists
-        navbar = soup.nav
-        self.assertIn('Blog', navbar.text)
-        self.assertIn('About Me', navbar.text)
+        # 2.2 Navigation Bar Test
+        self.navbar_test(soup)
         # 2.3 The title of the first post is in the Web browser tab title
         self.assertIn(post001.title, soup.title.text)
         # 2.4 The title of the first post exists in the post area
