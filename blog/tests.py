@@ -84,14 +84,16 @@ class TestView(TestCase):
         response = self.client.get(self.post001.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
-        # 2.2 Navigation Bar Test
+        # 2.2 Navigation Bar and Category Card Test
         self.navbar_test(soup)
+        self.category_card_test(soup)
         # 2.3 The title of the first post is in the Web browser tab title
         self.assertIn(self.post001.title, soup.title.text)
         # 2.4 The title of the first post exists in the post area
         mainArea = soup.find('div', id="main-area")
         postArea = soup.find('div', id="post-area")
         self.assertIn(self.post001.title, postArea.text)
+        self.assertIn(self.categoryBackend.name, postArea.text)
         # 2.5 The author of the first post exists in the post area(None Development)
         self.assertIn(self.user01.username.upper(), postArea.text)
         # 2.6 The content of the first post exists in the post area

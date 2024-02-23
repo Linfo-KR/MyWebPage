@@ -6,57 +6,62 @@
 
 {% block mainArea %}
     <div id="post-area">
-        <!-- Post content-->
-        <article>
-            <!-- Post header-->
-            <header class="mb-4">
-                <!-- Post title-->
-                <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
-                <h5 class="text-muted">{{ post.hookText }}</h5>
-
-                <!-- Post Author-->
-                <p class="lead">
-                    by
-                    <a href="#">{{ post.author | upper }}</a>
-                </p>
-                <hr>
-
-                <!-- Post CreateTime-->
-                <p>{{ post.createTime }}</p>
-
-                <hr>
-
-                <!-- Post categories-->
-                {% comment %} <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-                <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a> {% endcomment %}
-            </header>
-            <!-- Preview image figure-->
-            {% if post.headImage %}
-                <img class="img-fluid rounded" src="{{ post.headImage.url }}" alt="{{ post.title }} headImage">
-            {% else %}
-                <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
-            {% endif %}
-            <hr>
+        {% if post.category %}
+            <span class="badge badge-secondary float-right">{{ post.category }}</span>
+        {% else %}
+            <span class="badge badge-secondary float-right">Unclassified</span>
+        {% endif %}
             <!-- Post content-->
-            <p>{{ post.content }}</p>
-            <hr>
-            {% if post.fileUpload %}
-                <a href="{{ post.fileUpload.url }}" class="btn btn-outline-dark" role = "button" download>
-                    Download:
-                    {% if post.get_file_ext == 'csv' %}
-                        <i class="fa-solid fa-file-csv"></i>
-                    {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
-                        <i class="fa-solid fa-file-excel"></i>
-                    {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
-                        <i class="fa-solid fa-file-word"></i>
-                    {% else %}
-                        <i class="fa-solid fa-file"></i>
-                    {% endif %}
-                    {{ post.get_file_name }}
-                </a>
-            {% endif %}
-            <hr>
-        </article>
+            <article>
+                <!-- Post header-->
+                <header class="mb-4">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                    <h5 class="text-muted">{{ post.hookText }}</h5>
+
+                    <!-- Post Author-->
+                    <p class="lead">
+                        by
+                        <a href="#">{{ post.author | upper }}</a>
+                    </p>
+                    <hr>
+
+                    <!-- Post CreateTime-->
+                    <p>{{ post.createTime }}</p>
+
+                    <hr>
+
+                    <!-- Post categories-->
+                    {% comment %} <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
+                    <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a> {% endcomment %}
+                </header>
+                <!-- Preview image figure-->
+                {% if post.headImage %}
+                    <img class="img-fluid rounded" src="{{ post.headImage.url }}" alt="{{ post.title }} headImage">
+                {% else %}
+                    <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
+                {% endif %}
+                <hr>
+                <!-- Post content-->
+                <p>{{ post.content }}</p>
+                <hr>
+                {% if post.fileUpload %}
+                    <a href="{{ post.fileUpload.url }}" class="btn btn-outline-dark" role = "button" download>
+                        Download:
+                        {% if post.get_file_ext == 'csv' %}
+                            <i class="fa-solid fa-file-csv"></i>
+                        {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
+                            <i class="fa-solid fa-file-excel"></i>
+                        {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+                            <i class="fa-solid fa-file-word"></i>
+                        {% else %}
+                            <i class="fa-solid fa-file"></i>
+                        {% endif %}
+                        {{ post.get_file_name }}
+                    </a>
+                {% endif %}
+                <hr>
+            </article>
     </div>
 
     <!-- Comments section-->
