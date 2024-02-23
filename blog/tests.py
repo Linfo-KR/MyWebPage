@@ -98,3 +98,19 @@ class TestView(TestCase):
         self.assertIn(self.user01.username.upper(), postArea.text)
         # 2.6 The content of the first post exists in the post area
         self.assertIn(self.post001.content, postArea.text)
+        
+    def test_category_page(self):
+        response = self.client.get(self.categoryBackend.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+        
+        self.assertIn(self.categoryBackend.name, soup.h1.text)
+        
+        mainArea = soup.find('div', id="main-area")
+        self.assertIn(self.categoryBackend.name, mainArea.text)
+        self.assertIn(self.post001.title, mainArea.text)
+        self.assertNotIn(self.post002.title, mainArea.text)
+        self.assertNotIn(self.post003.title, mainArea.text)
