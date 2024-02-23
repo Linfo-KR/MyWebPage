@@ -145,3 +145,31 @@ class TestView(TestCase):
         self.assertIn(self.post001.title, mainArea.text)
         self.assertNotIn(self.post002.title, mainArea.text)
         self.assertNotIn(self.post003.title, mainArea.text)
+        
+    def test_create_post(self):
+        # If Not User Login?
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+        
+        # If User Login?
+        self.client.login(username='linfo-kr', password='linfo-kr')
+        
+        response = self.client.get('/blog/create_post/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        self.assertEqual('Create Post - Blog', soup.title.text)
+        mainArea = soup.find('div', id='main-area')
+        self.assertIn('Create New Post', mainArea.text)
+        
+        self.client.post(
+            '/blog/create_post/',
+            {
+                'title': 'Create Post Form',
+                'content': 'Create Post Form using Django.'
+            }
+        )
+        self.assertEqual(Post.objects.count(), 4)
+        lastPost = Post.objects.last()
+        self.assertEqual(lastPost.title, "Create Post Form")
+        self.assertEqual(lastPost.author.username, 'linfo-kr')
