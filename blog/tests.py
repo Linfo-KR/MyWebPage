@@ -173,17 +173,26 @@ class TestView(TestCase):
         mainArea = soup.find('div', id='main-area')
         self.assertIn('Create New Post', mainArea.text)
         
+        tag_str_input = mainArea.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+        
         self.client.post(
             '/blog/create_post/',
             {
                 'title': 'Create Post Form',
-                'content': 'Create Post Form using Django.'
+                'content': 'Create Post Form using Django.',
+                'tags_str': 'New Tag; Tag, Flutter'
             }
         )
         self.assertEqual(Post.objects.count(), 4)
         lastPost = Post.objects.last()
         self.assertEqual(lastPost.title, "Create Post Form")
         self.assertEqual(lastPost.author.username, 'linfo-us')
+        
+        self.assertEqual(lastPost.tags.count(), 3)
+        self.assertTrue(Tag.objects.get(name='New Tag'))
+        self.assertTrue(Tag.objects.get(name='Tag'))
+        self.assertEqual(Tag.objects.count(), 5)
         
     def test_update_post(self):
         update_post_url = f'/blog/update_post/{self.post003.pk}/'
