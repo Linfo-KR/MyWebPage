@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Category, Tag
 
 
@@ -29,14 +29,17 @@ class PostDetail(DetailView):
         return context
     
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     
     fields = ['title', 'hookText', 'content', 'headImage', 'fileUpload', 'category']
     
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+    
     def form_valid(self, form):
         currentUser = self.request.user
-        if currentUser.is_authenticated:
+        if currentUser.is_authenticated and (currentUser.is_staff or currentUser.is_superuser):
             form.instance.author = currentUser
             
             return super(PostCreate, self).form_valid(form)

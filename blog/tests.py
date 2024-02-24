@@ -7,16 +7,23 @@ from .models import Post, Category, Tag
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+        
         self.user01 = User.objects.create_user(username='linfo-kr', password='linfo-kr')
         self.user02 = User.objects.create_user(username='linfo-us', password='linfo-us')
+        self.user02.is_staff = True
+        self.user02.save()
+        
         self.categoryBackend = Category.objects.create(name='Backend', slug='backend')
         self.categoryDeepLearning = Category.objects.create(name='Deep Learning', slug='deep-learning')
+        
         self.tagDjango = Tag.objects.create(name='Django', slug='django')
         self.tagReact = Tag.objects.create(name='React', slug='react')
         self.tagFlutter = Tag.objects.create(name='Flutter', slug='flutter')
+        
         self.post001 = Post.objects.create(title = 'First Post', content = 'This is First Post', author = self.user01, category=self.categoryBackend)
         self.post002 = Post.objects.create(title = 'Second Post', content = 'This is Second Post', author = self.user02, category=self.categoryDeepLearning)
         self.post003 = Post.objects.create(title = 'Third Post', content = 'This is Third Post', author = self.user02)
+        
         self.post001.tags.add(self.tagDjango)
         self.post003.tags.add(self.tagReact)
         self.post003.tags.add(self.tagFlutter)
@@ -151,9 +158,13 @@ class TestView(TestCase):
         response = self.client.get('/blog/create_post/')
         self.assertNotEqual(response.status_code, 200)
         
-        # If User Login?
+        # If Not Staff Login?
         self.client.login(username='linfo-kr', password='linfo-kr')
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
         
+        # If Staff Login?
+        self.client.login(username='linfo-us', password='linfo-us')
         response = self.client.get('/blog/create_post/')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -172,4 +183,4 @@ class TestView(TestCase):
         self.assertEqual(Post.objects.count(), 4)
         lastPost = Post.objects.last()
         self.assertEqual(lastPost.title, "Create Post Form")
-        self.assertEqual(lastPost.author.username, 'linfo-kr')
+        self.assertEqual(lastPost.author.username, 'linfo-us')
