@@ -223,12 +223,17 @@ class TestView(TestCase):
         mainArea = soup.find('div', id="main-area")
         self.assertIn('Edit Post', mainArea.text)
         
+        tag_str_input = mainArea.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+        self.assertIn('React; Flutter', tag_str_input.attrs['value'])
+        
         response = self.client.post(
             update_post_url,
             {
                 'title': 'Update Third Post.',
                 'content': 'Update Third Post with Django Python Web Development Framework.',
-                'category': self.categoryDeepLearning.pk
+                'category': self.categoryDeepLearning.pk,
+                'tags_str': 'React; Pytorch, MySQL'
             },
             follow=True
         )
@@ -237,3 +242,7 @@ class TestView(TestCase):
         self.assertIn('Update Third Post.', mainArea.text)
         self.assertIn('Update Third Post with Django Python Web Development Framework.', mainArea.text)
         self.assertIn(self.categoryDeepLearning.name, mainArea.text)
+        self.assertIn('React', mainArea.text)
+        self.assertIn('Pytorch', mainArea.text)
+        self.assertIn('MySQL', mainArea.text)
+        self.assertNotIn('Flutter', mainArea.text)
