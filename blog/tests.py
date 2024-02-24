@@ -184,3 +184,47 @@ class TestView(TestCase):
         lastPost = Post.objects.last()
         self.assertEqual(lastPost.title, "Create Post Form")
         self.assertEqual(lastPost.author.username, 'linfo-us')
+        
+    def test_update_post(self):
+        update_post_url = f'/blog/update_post/{self.post003.pk}/'
+        
+        # If Not User Login?
+        response = self.client.get(update_post_url)
+        self.assertNotEqual(response.status_code, 200)
+        
+        # If Login, If Not Post's Author?
+        self.assertNotEqual(self.post003.author, self.user01)
+        self.client.login(
+            username=self.user01.username,
+            password='linfo-kr'
+        )
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 403)
+        
+        # If Login and Post's Author?
+        self.client.login(
+            username=self.post003.author.username,
+            password='linfo-us'
+        )
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        self.assertEqual('Edit Post - Blog', soup.title.text)
+        mainArea = soup.find('div', id="main-area")
+        self.assertIn('Edit Post', mainArea.text)
+        
+        response = self.client.post(
+            update_post_url,
+            {
+                'title': 'Update Third Post.',
+                'content': 'Update Third Post with Django Python Web Development Framework.',
+                'category': self.categoryDeepLearning.pk
+            },
+            follow=True
+        )
+        soup = BeautifulSoup(response.content, 'html.parser')
+        mainArea = soup.find('div', id='main-area')
+        self.assertIn('Update Third Post.', mainArea.text)
+        self.assertIn('Update Third Post with Django Python Web Development Framework.', mainArea.text)
+        self.assertIn(self.categoryDeepLearning.name, mainArea.text)
