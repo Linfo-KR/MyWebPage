@@ -1,6 +1,4 @@
-# With FBV
-# from django.shortcuts import render
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
@@ -35,6 +33,15 @@ class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
     
     fields = ['title', 'hookText', 'content', 'headImage', 'fileUpload', 'category']
+    
+    def form_valid(self, form):
+        currentUser = self.request.user
+        if currentUser.is_authenticated:
+            form.instance.author = currentUser
+            
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog/')
     
 def category_page(request, slug):
     if slug == 'no_category':
