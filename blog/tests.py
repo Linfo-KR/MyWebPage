@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 
 
 class TestView(TestCase):
@@ -27,6 +27,8 @@ class TestView(TestCase):
         self.post001.tags.add(self.tagDjango)
         self.post003.tags.add(self.tagReact)
         self.post003.tags.add(self.tagFlutter)
+        
+        self.comment001 = Comment.objects.create(post=self.post001, author=self.user01, content='First Comment.')
         
     def category_card_test(self, soup):
         categoriesCard = soup.find('div', id='categories-card')
@@ -120,6 +122,11 @@ class TestView(TestCase):
         self.assertIn(self.tagDjango.name, postArea.text)
         self.assertNotIn(self.tagReact.name, postArea.text)
         self.assertNotIn(self.tagFlutter.name, postArea.text)
+        
+        commentArea = soup.find('div', id="comment-area")
+        comment001Area = soup.find('div', id="comment-1")
+        self.assertIn(self.comment001.author.username, comment001Area.text)
+        self.assertIn(self.comment001.content, comment001Area.text)
         
     def test_category_page(self):
         response = self.client.get(self.categoryBackend.get_absolute_url())

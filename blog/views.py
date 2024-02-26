@@ -49,17 +49,18 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 tags_str = tags_str.replace(',', ';')
                 tags_list = tags_str.split(';')
                 
-                for tag in tags_list :
-                    tag = tag.strip()
-                    tag, is_tag_created = Tag.objects.get_or_create(name=tag)
+                for t in tags_list :
+                    t = t.strip()
+                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
                     if is_tag_created:
-                        tag.slug = slugify(tag, allow_unicode=True)
+                        tag.slug = slugify(t, allow_unicode=True)
                         tag.save()
                     self.object.tags.add(tag)
             
             return response
         else:
             return redirect('/blog/')
+
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
@@ -71,8 +72,8 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
         context = super(PostUpdate, self).get_context_data()
         if self.object.tags.exists():
             tags_str_list = list()
-            for tag in self.object.tags.all():
-                tags_str_list.append(tag.name)
+            for t in self.object.tags.all():
+                tags_str_list.append(t.name)
             context['tags_str_default'] = '; '.join(tags_str_list)
             
         return context
@@ -93,13 +94,12 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
             tags_str = tags_str.replace(',', ';')
             tags_list = tags_str.split(';')
             
-            for tag in tags_list:
-                tag = tag.strip()
-                tag, is_tag_created = Tag.objects.get_or_create(name=tag)
+            for t in tags_list:
+                t = t.strip()
+                tag, is_tag_created = Tag.objects.get_or_create(name=t)
                 if is_tag_created:
-                    tag.slug = slugify(tag, allow_unicode=True)
+                    tag.slug = slugify(t, allow_unicode=True)
                     tag.save()
-                    
                 self.object.tags.add(tag)
                 
         return response
