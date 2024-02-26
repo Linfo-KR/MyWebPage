@@ -351,3 +351,50 @@ class TestView(TestCase):
         comment001Div = soup.find('div', id="comment-1")
         self.assertIn('Update Comment', comment001Div.text)
         self.assertIn('Updated: ', comment001Div.text)
+        
+    def test_delete_comment(self):
+        commentByUser02 = Comment.objects.create(
+            post = self.post001,
+            author = self.user02,
+            content = 'Second Comment'
+        )
+        
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(self.post001.comment_set.count(), 2)
+        
+        # If Not User Login?
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertFalse(commentArea.find('a', id="comment-1-delete-btn"))
+        self.assertFalse(commentArea.find('a', id="comment-2-delete-btn"))
+        
+        # If User Login?
+        self.client.login(username='linfo-us', password='linfo-us')
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertFalse(commentArea.find('a', id="comment-1-delete-btn"))
+        comment002DeleteModalBtn = commentArea.find('a', id="comment-2-delete-modal-btn")
+        self.assertIn('Delete', comment002DeleteModalBtn.text)
+        self.assertEqual(comment002DeleteModalBtn.attrs['data-target'], '#deleteCommentModal-2')
+        
+        deleteCommentModal002 = soup.find('div', id="deleteCommentModal-2")
+        self.assertIn('Are you Sure?', deleteCommentModal002.text)
+        reallyDeleteBtn002 = deleteCommentModal002.find('a')
+        self.assertIn('Delete', reallyDeleteBtn002.text)
+        self.assertEqual(reallyDeleteBtn002['href'], '/blog/delete_comment/2/')
+        
+        response = self.client.get('/blog/delete_comment/2/', follow = True)
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.assertIn(self.post001.title, soup.title.text)
+        commentArea = soup.find('div', id="comment-area")
+        self.assertNotIn(commentByUser02.content, commentArea.text)
+        
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(self.post001.comment_set.count(), 1)

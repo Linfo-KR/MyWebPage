@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
+    path('delete_comment/<int:pk>/', views.delete_comment),
     path('update_comment/<int:pk>/', views.CommentUpdate.as_view()),
     path('update_post/<int:pk>/', views.PostUpdate.as_view()),
     path('', views.PostList.as_view()),
