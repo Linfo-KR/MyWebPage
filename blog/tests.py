@@ -253,3 +253,51 @@ class TestView(TestCase):
         self.assertIn('Pytorch', mainArea.text)
         self.assertIn('MySQL', mainArea.text)
         self.assertNotIn('Flutter', mainArea.text)
+        
+    def test_comment_form(self):
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(self.post001.comment_set.count(), 1)
+        
+        # If Not User Login?
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertIn('Log In and Leave a Comment', commentArea.text)
+        self.assertFalse(commentArea.find('form', id="comment-form"))
+        
+        # If User Login?
+        self.client.login(username='linfo-kr', password="linfo-kr")
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertNotIn('Log In and Leave a Comment', commentArea.text)
+        
+        commentForm = commentArea.find('form', id="comment-form")
+        self.assertTrue(commentForm.find('textarea', id="id_content"))
+        
+        response = self.client.post(
+            self.post001.get_absolute_url() + 'new_comment/',
+            {
+                'content': "First Comments this Post",
+            },
+            follow=True
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(self.post001.comment_set.count(), 2)
+        
+        newComment = Comment.objects.last()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.assertIn(newComment.post.title, soup.title.text)
+        
+        commentArea = soup.find('div', id="comment-area")
+        newCommentDiv = commentArea.find('div', id=f'comment-{newComment.pk}')
+        self.assertIn('linfo-kr', newCommentDiv.text)
+        self.assertIn('First Comments this Post', newCommentDiv.text)
