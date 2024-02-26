@@ -301,3 +301,53 @@ class TestView(TestCase):
         newCommentDiv = commentArea.find('div', id=f'comment-{newComment.pk}')
         self.assertIn('linfo-kr', newCommentDiv.text)
         self.assertIn('First Comments this Post', newCommentDiv.text)
+
+    def test_comment_update(self):
+        commentByUser02 = Comment.objects.create(
+            post = self.post001,
+            author = self.user02,
+            content = 'Second Comment'
+        )
+        
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertFalse(commentArea.find('a', id="comment-1-update-btn"))
+        self.assertFalse(commentArea.find('a', id="comment-2-update-btn"))
+        
+        # If User Login?
+        self.client.login(username="linfo-kr", password="linfo-kr")
+        response = self.client.get(self.post001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        commentArea = soup.find('div', id="comment-area")
+        self.assertFalse(commentArea.find('a', id="comment-2-update-btn"))
+        comment001UpdateBtn = commentArea.find('a', id="comment-1-update-btn")
+        self.assertIn('Edit', comment001UpdateBtn.text)
+        self.assertEqual(comment001UpdateBtn.attrs['href'], '/blog/update_comment/1/')
+        
+        response = self.client.get('/blog/update_comment/1/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        self.assertEqual('Edit Comment - Blog', soup.title.text)
+        updateCommentForm = soup.find('form', id="comment-form")
+        contentTextarea = updateCommentForm.find('textarea', id="id_content")
+        self.assertIn(self.comment001.content, contentTextarea.text)
+        
+        response = self.client.post(
+            f'/blog/update_comment/{self.comment001.pk}/',
+            {
+                'content': 'Update Comment',
+            },
+            follow=True
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        comment001Div = soup.find('div', id="comment-1")
+        self.assertIn('Update Comment', comment001Div.text)
+        self.assertIn('Updated: ', comment001Div.text)
