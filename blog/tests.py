@@ -19,14 +19,17 @@ class TestView(TestCase):
         self.tagDjango = Tag.objects.create(name='Django', slug='django')
         self.tagReact = Tag.objects.create(name='React', slug='react')
         self.tagFlutter = Tag.objects.create(name='Flutter', slug='flutter')
+        self.tagPython = Tag.objects.create(name='Python', slug='python')
         
         self.post001 = Post.objects.create(title = 'First Post', content = 'This is First Post', author = self.user01, category=self.categoryBackend)
         self.post002 = Post.objects.create(title = 'Second Post', content = 'This is Second Post', author = self.user02, category=self.categoryDeepLearning)
         self.post003 = Post.objects.create(title = 'Third Post', content = 'This is Third Post', author = self.user02)
+        self.post004 = Post.objects.create(title = 'Python', content = 'Test Search Function', author = self.user02, category = self.categoryBackend)
         
         self.post001.tags.add(self.tagDjango)
         self.post003.tags.add(self.tagReact)
         self.post003.tags.add(self.tagFlutter)
+        self.post003.tags.add(self.tagPython)
         
         self.comment001 = Comment.objects.create(post=self.post001, author=self.user01, content='First Comment.')
         
@@ -56,7 +59,7 @@ class TestView(TestCase):
 
     def test_post_list(self):
         # If Post Exist :
-        self.assertEqual(Post.objects.count(), 3)
+        self.assertEqual(Post.objects.count(), 4)
         
         response = self.client.get('/blog/')
         self.assertEqual(response.status_code, 200)
@@ -191,7 +194,7 @@ class TestView(TestCase):
                 'tags_str': 'New Tag; Tag, Flutter'
             }
         )
-        self.assertEqual(Post.objects.count(), 4)
+        self.assertEqual(Post.objects.count(), 5)
         lastPost = Post.objects.last()
         self.assertEqual(lastPost.title, "Create Post Form")
         self.assertEqual(lastPost.author.username, 'linfo-us')
@@ -199,7 +202,7 @@ class TestView(TestCase):
         self.assertEqual(lastPost.tags.count(), 3)
         self.assertTrue(Tag.objects.get(name='New Tag'))
         self.assertTrue(Tag.objects.get(name='Tag'))
-        self.assertEqual(Tag.objects.count(), 5)
+        self.assertEqual(Tag.objects.count(), 6)
         
     def test_update_post(self):
         update_post_url = f'/blog/update_post/{self.post003.pk}/'
@@ -398,3 +401,16 @@ class TestView(TestCase):
         
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(self.post001.comment_set.count(), 1)
+
+    def test_search(self):
+        response = self.client.get('/blog/search/Python/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        mainArea = soup.find('div', id="main-area")
+        
+        self.assertIn('Search: Python (2)', mainArea.text)
+        self.assertNotIn(self.post001.title, mainArea.text)
+        self.assertNotIn(self.post002.title, mainArea.text)
+        self.assertIn(self.post003.title, mainArea.text)
+        self.assertIn(self.post004.title, mainArea.text)
