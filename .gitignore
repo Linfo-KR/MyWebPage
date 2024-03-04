@@ -162,3 +162,7 @@ cython_debug/
 
 migrations/
 _media/
+
+
+.env.prod
+.env.prod.db
