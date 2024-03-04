@@ -1,17 +1,194 @@
 <!DOCTYPE html>
+
+{% load static %}
+
 <html lang = "ko">
 <head>
     <meta charset="UTF-8">
-    <title>LINFO-KR</title>
+    <title>About LINFO-KR</title>
+
+    <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'singlepages/css/about_me.css' %}" media="screen">
+    <script src="https://kit.fontawesome.com/a31850d8b2.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav>
-    <a href="/blog/">Blog</a>
-    <a href="/about_me/">About Me</a>
-</nav>
 
-<h1>Linfo-KR's Page</h1>
-<h2>Portfolio Page</h2>
-<h3>The Page is Preparing</h3>
+{% include 'blog/navbar.html' %}
+
+<section>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1>LINFO-KR's WebPages.</h1>
+                <p class="lead">
+                    National Korea Maritime and Ocean University<br/>
+                    Graduate School
+                </p>
+
+                <ul>
+                    <li>Work Experiences</li>
+                    <ul>
+                        <li>Content Prepare</li>
+                        <li>Content Prepare</li>
+                    </ul>
+
+                    <li>Educations</li>
+                    <ul>
+                        <li>Content Prepare</li>
+                        <li>Content Prepare</li>
+                    </ul>
+
+                    <li>References</li>
+                    <ul>
+                        <li>Content Prepare</li>
+                        <li>Content Prepare</li>
+                    </ul>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <img class="img-fluid" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light margin-for-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Project</h1>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card" data-toggle="modal" data-target="#myFirstProject">
+                    <img class="card-img-top" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    <div class="card-body">
+                        <h5 class="card-title">First Project [Project Name]</h5>
+                        <p>Project Contents</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card" data-toggle="modal" data-target="#mySecondProject">
+                    <img class="card-img-top" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    <div class="card-body">
+                        <h5 class="card-title">Second Project [Project Name]</h5>
+                        <p>Project Contents</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card" data-toggle="modal" data-target="#myThirdProject">
+                    <img class="card-img-top" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    <div class="card-body">
+                        <h5 class="card-title">Third Project [Project Name]</h5>
+                        <p>Project Contents</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+<!--Modal-->
+<div class="modal fade" id="myFirstProject" tabindex="-1" role="dialog" aria-labelledby="firstProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="firstProjectModalLabel">My First Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <img class="img-fluid" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    </div>
+                    <div class="col-lg-5">
+                        <p>First Project is...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mySecondProject" tabindex="-1" role="dialog" aria-labelledby="secondProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id=" secondProjectModalLabel">My Second Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <img class="img-fluid" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    </div>
+                    <div class="col-lg-5">
+                        <p>Second Project is...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myThirdProject" tabindex="-1" role="dialog" aria-labelledby="thirdProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id=" thirdProjectModalLabel">My Third Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <img class="img-fluid" src="{% static 'singlepages/images/Lake Wallpaper.jpg' %}">
+                    </div>
+                    <div class="col-lg-5">
+                        <p>Third Project is...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed-bottom">
+    {% include 'blog/footer.html' %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+        integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+        crossorigin="anonymous">
+</script>
+
 </body>
 </html>
