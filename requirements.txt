@@ -16,6 +16,7 @@ django-crispy-forms==1.9.2
 django-extensions==3.2.3
 django-markdownx==4.0.7
 executing==2.0.1
+gunicorn==21.2.0
 idna==3.6
 importlib-metadata==7.0.1
 ipython==8.12.3
@@ -23,6 +24,7 @@ jedi==0.19.1
 Markdown==3.5.2
 matplotlib-inline==0.1.6
 oauthlib==3.2.2
+packaging==23.2
 parso==0.8.3
 pickleshare==0.7.5
 pillow==10.2.0
