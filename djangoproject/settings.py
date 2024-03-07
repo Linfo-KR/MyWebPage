@@ -181,4 +181,3 @@ LOGIN_REDIRECT_URL = '/blog/'
 CSRF_TRUSTED_ORIGINS = ['https://linfo-kr.com', 'https://www.linfo-kr.com']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
