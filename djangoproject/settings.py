@@ -178,6 +178,3 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 LOGIN_REDIRECT_URL = '/blog/'
 
-CSRF_TRUSTED_ORIGINS = ['https://linfo-kr.com', 'https://www.linfo-kr.com']
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
