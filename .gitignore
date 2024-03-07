@@ -166,3 +166,5 @@ _media/
 
 .env.prod
 .env.prod.db
+docker-compose.yml
+nginx/nginx.conf
