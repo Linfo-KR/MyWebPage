@@ -154,6 +154,8 @@ AUTHENTICATION_BACKENDS = (
     
 )
 
+SITE_ID = 1
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -171,12 +173,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
-SITE_ID = 1
-
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 LOGIN_REDIRECT_URL = '/blog/'
 
 CSRF_TRUSTED_ORIGINS = ['https://*.linfo-kr.com', 'https://www.linfo-kr.com']
